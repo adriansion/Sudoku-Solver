@@ -119,15 +119,10 @@ public class Backtracker {
 		if (!stack1.isEmpty()) {
 			stack2.push(stack1.pop());
 		}
-		if (stack2.peek().getValue() == -1) { // This if statement might be redundant
-			stack2.peek().setValue(1);
-		} else {
 			if (stack2.peek().getValue() < 9) {
 				stack2.peek().setValue(stack2.peek().getValue() + 1);
 			} else {
-				stack2.peek().setValue(-1);
 				Backtrack();
-			}
 		}
 	}
 
