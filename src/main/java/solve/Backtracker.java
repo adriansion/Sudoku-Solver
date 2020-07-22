@@ -36,10 +36,9 @@ public class Backtracker {
 
 	public Grid Solve(Grid grid) {
 		this.grid = grid;
+
 		this.grid.getSquareList().forEach((n) -> n.setPreSolved(!(n.getValue() == -1)));
-
 		stack2 = this.organizeNonClues();
-
 		this.exchangeSquares();
 
 		return this.grid;
@@ -47,8 +46,6 @@ public class Backtracker {
 
 	/**
 	 * Contains main solving algorithm.
-	 *
-	 * @author Adrian
 	 */
 	private void exchangeSquares() {
 
