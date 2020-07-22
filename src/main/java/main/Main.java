@@ -1,15 +1,12 @@
 package main;
 
-import java.time.format.DateTimeFormatter;  
-import java.time.LocalDateTime;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import structure.Grid;
 import solve.Backtracker;
+import structure.Grid;
 
 /**
- * Solver notes: human method: use candidate system
+ * Main
  * @author Adrian
  *
  */
@@ -17,33 +14,24 @@ public class Main {
 
 	private static final Logger logger = LogManager.getLogger("Main");
 
-//	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		logger.info("Starting solver...");
+		logger.info("Starting application.");
 		GridFileReader fileReader = new GridFileReader();
 		Verifier verifier = new Verifier();
-		
-		// Solvers
+
+		// Brute-force solving algorithm
 		Backtracker backtracker = new Backtracker();
 
-		Grid grid = fileReader.createGrid("grid1");
-		Grid unsolved = fileReader.createGrid("grid6");
 
-		verifier.verify(grid);
+		logger.info("Reading and verifying grid.");
+		Grid unsolved = fileReader.createGrid("grid6");
 		verifier.verify(unsolved);
-		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss:SS");
-		LocalDateTime start = LocalDateTime.now();
-		
+
+		logger.info("Solving grid.");
 		Grid solved = backtracker.Solve(unsolved);
-		
-		
-		LocalDateTime finish = LocalDateTime.now();
-		
 		verifier.verify(solved);
-		
+
+		logger.info("Grid solved.");
 //		System.out.println("Iterations: " + backtracker.getIterations());
-		System.out.println("Start time: " + formatter.format(start));
-		System.out.println("Finish time: " + formatter.format(finish));
 	}
 }
