@@ -1,6 +1,7 @@
 package main;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import structure.Band;
 import structure.Grid;
@@ -9,9 +10,7 @@ import structure.Square;
 import structure.Stack;
 
 /**
- * Inspects grid and deems whether it is a solved puzzle. Notes: - Implement
- * solvability feature - Deduce whether grid is logic solvable (count clues, see
- * if l-1 values are present)
+ * Inspects grid and deems whether it is a solved puzzle.
  * 
  * @author Adrian
  *
@@ -19,7 +18,7 @@ import structure.Stack;
 public class Verifier {
 
 	private Grid grid;
-	private HashMap<Integer, Boolean> valueMap = new HashMap<Integer, Boolean>();
+	private Map<Integer, Boolean> valueMap = new HashMap<>();
 
 	public Verifier() {
 	}
@@ -36,7 +35,7 @@ public class Verifier {
 	}
 
 	/**
-	 * Clear hash map for reuse.
+	 * Clears hash map for reuse.
 	 */
 	private void cleanMap() {
 		for (int i = 1; i <= 9; i++) {
