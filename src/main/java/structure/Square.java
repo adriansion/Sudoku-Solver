@@ -5,6 +5,7 @@ import java.util.ArrayList;
 /**
  * This represents each of the 81 individual grid squares
  *
+ * @author Adrian
  */
 public class Square {
 
@@ -16,7 +17,7 @@ public class Square {
 	private Square left, right, above, below;
 
 	// Meant to contain possible values while solving grid
-	private ArrayList<String> candidates = new ArrayList<String>();
+	private ArrayList<String> candidates = new ArrayList<>();
 
 	// Constructors
 	public Square(int value) {
@@ -121,7 +122,7 @@ public class Square {
 	// USE CANDIDATES FOR BACKTRACKING ALGORITHM
 
 	public ArrayList<Integer> getCandidates() {
-		ArrayList<Integer> intList = new ArrayList<Integer>();
+		ArrayList<Integer> intList = new ArrayList<>();
 		
 		for (String candidate : candidates) {
 			intList.add(Integer.parseInt(candidate));

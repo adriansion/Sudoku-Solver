@@ -10,10 +10,10 @@ public class Grid {
 
 	private String gridName;
 
-	private ArrayList<Square> squareList = new ArrayList<Square>();
-	private ArrayList<Band> bandList = new ArrayList<Band>();
-	private ArrayList<Stack> stackList = new ArrayList<Stack>();
-	private ArrayList<Region> regionList = new ArrayList<Region>();
+	private ArrayList<Square> squareList = new ArrayList<>();
+	private ArrayList<Band> bandList = new ArrayList<>();
+	private ArrayList<Stack> stackList = new ArrayList<>();
+	private ArrayList<Region> regionList = new ArrayList<>();
 
 	public Grid() {
 		this.populateSquareList();

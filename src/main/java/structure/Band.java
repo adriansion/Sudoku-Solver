@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class Band {
 
-	private ArrayList<Square> squareList = new ArrayList<Square>();
+	private ArrayList<Square> squareList = new ArrayList<>();
 
 	public Band(Grid grid, int bandNumber) {
 		this.populateSquareList(grid, bandNumber);

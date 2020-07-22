@@ -20,9 +20,6 @@ public class Verifier {
 	private Grid grid;
 	private Map<Integer, Boolean> valueMap = new HashMap<>();
 
-	public Verifier() {
-	}
-
 	/**
 	 * Displays grid and runs deeper verification methods, before printing whether
 	 * grid is solved.

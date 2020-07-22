@@ -20,7 +20,7 @@ public class Main {
 
 
 		Log.logger.info("Reading and verifying grid.");
-		Grid unsolved = fileReader.createGrid("grid6");
+		Grid unsolved = fileReader.createGrid("Grid_OneSquareMissing");
 		verifier.verify(unsolved);
 
 		Log.logger.info("Solving grid.");
@@ -28,6 +28,6 @@ public class Main {
 		verifier.verify(solved);
 
 		Log.logger.info("Grid solved.");
-//		System.out.println("Iterations: " + backtracker.getIterations());
+		System.out.println("Iterations: " + backtracker.getIterations());
 	}
 }

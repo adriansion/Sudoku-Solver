@@ -15,9 +15,6 @@ public class GridFileReader {
 
 	private Grid grid;
 
-	public GridFileReader() {
-	}
-
 	/**
 	 * Performs reading and grid creation.
 	 */

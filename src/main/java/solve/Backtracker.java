@@ -30,13 +30,9 @@ import structure.Square;
  */
 public class Backtracker {
 
-	private int counter = 0;
+	private int iterations = 0;
 	private Grid grid;
-	private Stack<Square> stack1 = new Stack<Square>(), stack2 = new Stack<Square>();
-
-	public Backtracker() {
-
-	}
+	private Stack<Square> stack1 = new Stack<>(), stack2 = new Stack<>();
 
 	public Grid Solve(Grid grid) {
 		this.grid = grid;
@@ -49,12 +45,17 @@ public class Backtracker {
 		return this.grid;
 	}
 
+	/**
+	 * Contains main solving algorithm.
+	 *
+	 * @author Adrian
+	 */
 	private void exchangeSquares() {
 
 		while (!stack2.isEmpty()) {
 			for (Square square : stack2) {
 
-				square.getCandidates().forEach((n) -> square.removeCandidate(n));
+				square.getCandidates().forEach(square::removeCandidate);
 
 				int candidate = (square.getValue() == -1 ? 1 : square.getValue());
 
@@ -63,30 +64,30 @@ public class Backtracker {
 				}
 
 			}
-			Square c = stack2.peek();
-			boolean v = false;
+			Square currentSquare = stack2.peek();
+			boolean validSquare = false;
 
-			while (!v && !c.getCandidates().isEmpty()) {
-				for (int candidate : c.getCandidates()) {
-					for (Square b : this.grid.getBandList().get(c.getBand()).getSquareList()) {
-						if (b.getValue() == candidate) {
-							c.removeCandidate(candidate);
-							v = false;
+			while (!validSquare && !currentSquare.getCandidates().isEmpty()) {
+				for (int candidate : currentSquare.getCandidates()) {
+					for (Square bandSquare : this.grid.getBandList().get(currentSquare.getBand()).getSquareList()) {
+						if (bandSquare.getValue() == candidate) {
+							currentSquare.removeCandidate(candidate);
+							validSquare = false;
 							break;
 						} else {
-							for (Square s : this.grid.getStackList().get(c.getStack()).getSquareList()) {
-								if (s.getValue() == candidate) {
-									c.removeCandidate(candidate);
-									v = false;
+							for (Square stackSquare : this.grid.getStackList().get(currentSquare.getStack()).getSquareList()) {
+								if (stackSquare.getValue() == candidate) {
+									currentSquare.removeCandidate(candidate);
+									validSquare = false;
 									break;
 								} else {
-									for (Square r : this.grid.getRegionList().get(c.getRegion()).getSquareList()) {
-										if (r.getValue() == candidate) {
-											c.removeCandidate(candidate);
-											v = false;
+									for (Square regionSquare : this.grid.getRegionList().get(currentSquare.getRegion()).getSquareList()) {
+										if (regionSquare.getValue() == candidate) {
+											currentSquare.removeCandidate(candidate);
+											validSquare = false;
 											break;
 										} else {
-											v = true;
+											validSquare = true;
 										}
 									}
 								}
@@ -94,15 +95,15 @@ public class Backtracker {
 						}
 					}
 
-					if (v) {
-						counter++;
+					if (validSquare) {
+						iterations++;
 						stack2.peek().setValue(candidate);
 						stack1.push(stack2.pop());
 						break;
 					}
 				}
 			}
-			if (!v) {
+			if (!validSquare) {
 				this.Backtrack();
 			}
 		}
@@ -113,7 +114,7 @@ public class Backtracker {
 	 */
 	private void Backtrack() {
 		
-		counter++;
+		iterations++;
 		stack2.peek().setValue(-1);
 		if (!stack1.isEmpty()) {
 			stack2.push(stack1.pop());
@@ -135,7 +136,7 @@ public class Backtracker {
 	 * not provided in advance.
 	 */
 	private Stack<Square> organizeNonClues() {
-		Stack<Square> stack2 = new Stack<Square>();
+		Stack<Square> stack2 = new Stack<>();
 
 		for (int i = this.grid.getSquareList().size() - 1; i >= 0; i--) {
 			if (!this.grid.getSquareList().get(i).isPreSolved()) {
@@ -153,6 +154,6 @@ public class Backtracker {
 	}
 
 	public int getIterations() {
-		return counter;
+		return iterations;
 	}
 }

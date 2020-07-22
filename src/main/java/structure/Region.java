@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class Region {
 
-	private ArrayList<Square> squareList = new ArrayList<Square>();
+	private ArrayList<Square> squareList = new ArrayList<>();
 
 	public Region(Grid grid, int regionNumber) {
 		this.populateSquareList(grid, regionNumber);
