@@ -1,6 +1,5 @@
 package solve;
 
-import main.GridFileReader;
 import main.Log;
 import structure.*;
 
@@ -18,38 +17,19 @@ import java.util.Random;
 public class Genetic_Algorithm {
 
     private Grid unsolved, solution;
-    private ArrayList<Grid> reproductionPool = new ArrayList<>();
-    private Map<Grid, Integer> fitnessScores = new HashMap<Grid, Integer>();
+    private Map<Grid, Integer> reproductionPool = new HashMap<Grid, Integer>();
     Random random = new Random();
 
     public Grid solve(Grid grid) {
         this.unsolved = grid;
 
         this.produceFirstGeneration(50);
+
+
+        reproductionPool.forEach((n, m) -> {
+            reproductionPool.put(n, this.determineFitness(n));
+        });
         Log.logger.info("Production of first generation complete.");
-//        for (Grid g : reproductionPool) {
-//            g.displayGrid(false);
-//        }
-
-        // This is for testing purposes only, but could be worked into a fitness function!
-//        for (Grid g : reproductionPool) {
-//            int[] counts = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
-//            for (Square square : g.getSquareList()) {
-//                counts[square.getValue() - 1]++;
-//            }
-//            for (int k = 0; k < 9; k++){
-//                System.out.println(counts[k]);
-//
-//            }
-//            System.out.println();
-//        }
-
-//        reproductionPool.get(0).displayGrid(false);
-        reproductionPool.forEach(this::determineFitness);
-
-        Backtracker backtracker = new Backtracker();
-        GridFileReader fileReader = new GridFileReader();
-        this.determineFitness(backtracker.Solve(fileReader.createGrid("Grid_Empty")));
 
 
         return this.unsolved;
@@ -109,7 +89,7 @@ public class Genetic_Algorithm {
             }
 
             newGrid.setGeneration(1);
-            reproductionPool.add(newGrid);
+            reproductionPool.put(newGrid, 101);
 
 
         }
@@ -188,7 +168,20 @@ public class Genetic_Algorithm {
         }
 
         score /= 4;
-        System.out.println("Score :" + score);
+//        System.out.println("Score :" + score);
         return score;
+
+        // This is for testing purposes only, but could be worked into a fitness function!
+//        for (Grid g : reproductionPool) {
+//            int[] counts = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+//            for (Square square : g.getSquareList()) {
+//                counts[square.getValue() - 1]++;
+//            }
+//            for (int k = 0; k < 9; k++){
+//                System.out.println(counts[k]);
+//
+//            }
+//            System.out.println();
+//        }
     }
 }
