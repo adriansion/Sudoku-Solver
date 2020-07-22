@@ -3,6 +3,8 @@ package main;
 import java.time.format.DateTimeFormatter;  
 import java.time.LocalDateTime;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import structure.Grid;
 import solve.Backtracker;
 
@@ -13,8 +15,11 @@ import solve.Backtracker;
  */
 public class Main {
 
+	private static final Logger logger = LogManager.getLogger("Main");
+
 //	@SuppressWarnings("unused")
 	public static void main(String[] args) {
+		logger.info("Starting solver...");
 		GridFileReader fileReader = new GridFileReader();
 		Verifier verifier = new Verifier();
 		
