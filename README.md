@@ -11,4 +11,5 @@ To do:
 - Improve backtracking algorithm
 - ~~Begin stochastic solving algorithm~~
     - Early stage complete.
+    - Very Important: Adjust genetic algorithm's fitness function
 - Explore UI

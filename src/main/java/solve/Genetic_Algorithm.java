@@ -16,21 +16,24 @@ import java.util.Random;
  */
 public class Genetic_Algorithm {
 
-    private Grid unsolved, solution;
-    private Map<Grid, Integer> reproductionPool = new HashMap<Grid, Integer>();
+    private final int individuals = 100, mutations = 3;
+    private int latestGeneration = 1;
+    private Grid unsolved, solution, fittestPrimary = null, fittestSecondary = null;
+    ;
+    private HashMap<Grid, Integer> reproductionPool = new HashMap<>();
     Random random = new Random();
 
     public Grid solve(Grid grid) {
         this.unsolved = grid;
 
-        this.produceFirstGeneration(50);
+        this.produceFirstGeneration(this.individuals);
 
-
-        reproductionPool.forEach((n, m) -> {
-            reproductionPool.put(n, this.determineFitness(n));
-        });
+        reproductionPool.forEach((n, m) -> reproductionPool.put(n, this.determineFitness(n)));
         Log.logger.info("Production of first generation complete.");
 
+        this.runTournament(this.reproductionPool);
+
+        this.reproduce();
 
         return this.unsolved;
     }
@@ -183,5 +186,119 @@ public class Genetic_Algorithm {
 //            }
 //            System.out.println();
 //        }
+    }
+
+    /**
+     * Determines the individuals to reproduce and crossover.
+     *
+     * @param pool Current reproduction pool
+     */
+    private void runTournament(HashMap<Grid, Integer> pool) {
+
+        HashMap<Grid, Integer> subPopA = new HashMap<>(), subPopB = new HashMap<>();
+        pool.forEach((n, m) -> { // Condense this to eliminate subPopB
+            if (subPopA.size() < this.individuals / 2 && random.nextInt(1) == 1) {
+                subPopA.put(n, m);
+            } else if (subPopB.size() == this.individuals / 2) {
+                subPopA.put(n, m);
+            } else {
+                if (random.nextInt(1) == 1) {
+                    subPopA.put(n, m);
+                } else {
+                    subPopB.put(n, m);
+                }
+            }
+
+        });
+
+        // Starting with full Elitism
+        ArrayList<Integer> fitnesses = new ArrayList<>();
+        subPopA.forEach((n, m) -> fitnesses.add(m));
+        fitnesses.sort(null);
+//        fitnesses.forEach(System.out::println);
+
+
+        for (Map.Entry<Grid, Integer> entry : subPopA.entrySet()) {
+            if (entry.getValue().equals(fitnesses.get(0))) {
+                fittestPrimary = entry.getKey();
+                System.out.println("Primary Fitness Score: " + entry.getValue());
+                break;
+            }
+        }
+        for (Map.Entry<Grid, Integer> entry : subPopA.entrySet()) {
+            if (entry.getValue().equals(fitnesses.get(1)) && !entry.getKey().equals(fittestPrimary)) {
+                fittestSecondary = entry.getKey();
+                System.out.println("Secondary Fitness Score: " + entry.getValue());
+                break;
+            }
+        }
+
+//        System.out.println( fittestPrimary + " " + fittestSecondary);
+
+
+//        subPopA.forEach((n, m) -> System.out.println("A: " + n + " " + m));
+//        System.out.println();
+//        subPopB.forEach((n, m) -> System.out.println("B: " + n + " " + m));
+//        System.out.println(subPopA.size() + " " + subPopB.size());
+
+
+    }
+
+    /**
+     * Creates offspring to return to populace
+     */
+    private void reproduce() {
+        // Crossover
+
+        int crossoverPoint = random.nextInt(fittestPrimary.getSquareList().size() - 1) + 1;
+        Grid newGrid = new Grid();
+
+        for (int i = 0; i < crossoverPoint; i++) {
+            newGrid.getSquareList().get(i).setValue(fittestPrimary.getSquareList().get(i).getValue());
+        }
+
+        for (int i = crossoverPoint; i < fittestSecondary.getSquareList().size(); i++) {
+            newGrid.getSquareList().get(i).setValue(fittestSecondary.getSquareList().get(i).getValue());
+        }
+
+        System.out.println("------------");
+
+        fittestPrimary.displayGrid(false);
+        fittestSecondary.displayGrid(false);
+        System.out.println(crossoverPoint);
+
+        newGrid.displayGrid(false);
+
+        System.out.println(this.determineFitness(fittestPrimary));
+        System.out.println(this.determineFitness(fittestSecondary));
+        System.out.println(this.determineFitness(newGrid));
+
+
+        System.out.println("------------");
+
+
+        // Mutation
+
+        int mutationCount = 0;
+        int[] mutationPoints = new int[this.mutations];
+        for (int i = 0; i < mutationPoints.length; i++) {
+            mutationPoints[i] = random.nextInt(80);
+        }
+
+        for (int i = 0; i < mutationPoints.length; i++){
+            System.out.println(mutationPoints[i]);
+        }
+
+        for (int i = 0; i < mutationPoints.length; i++) {
+            if (!newGrid.getSquareList().get(mutationPoints[i]).isPreSolved()) {
+                newGrid.getSquareList().get(mutationPoints[i]).setValue(random.nextInt(8) + 1);
+            }
+        }
+
+        newGrid.displayGrid(false);
+        System.out.println(this.determineFitness(newGrid));
+        
+
+        // Return new grid to reproductionPool
     }
 }
