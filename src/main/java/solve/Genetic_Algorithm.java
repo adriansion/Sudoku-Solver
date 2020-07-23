@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * First attempt at a solving algorithm using a stochastic technique.
@@ -17,9 +18,9 @@ import java.util.Random;
 public class Genetic_Algorithm {
 
     private final int individuals = 100, mutations = 3;
-    private int latestGeneration = 1;
+    private int latestGeneration = 1, bestFitnessScore = 10000, earlyFitnessScore = 10000 ,iterations = 0;
     private Grid unsolved, solution, fittestPrimary = null, fittestSecondary = null;
-    ;
+    boolean printData = false, compressScores = false, expandScores = true, printScores = false, displayGrids = true;
     private HashMap<Grid, Integer> reproductionPool = new HashMap<>();
     Random random = new Random();
 
@@ -31,11 +32,28 @@ public class Genetic_Algorithm {
         reproductionPool.forEach((n, m) -> reproductionPool.put(n, this.determineFitness(n)));
         Log.logger.info("Production of first generation complete.");
 
-        this.runTournament(this.reproductionPool);
 
-        this.reproduce();
+//        while (this.bestFitnessScore != 0) {
+//            iterations++;
+//            this.runTournament();
+//            this.reproduce();
+//
+//        }
 
-        return this.unsolved;
+        for (iterations = 1; iterations <= 1000000; iterations++) {
+            this.runTournament();
+            this.reproduce();
+            if (bestFitnessScore != 10000 && earlyFitnessScore == 10000){
+                earlyFitnessScore = bestFitnessScore;
+            }
+        }
+
+        Log.logger.info("Sample Early Score: " + this.earlyFitnessScore);
+        Log.logger.info("Best Fitness Score: " + this.bestFitnessScore);
+        Log.logger.info("Latest Generation: " + this.latestGeneration);
+
+
+        return this.solution;
     }
 
     /**
@@ -151,27 +169,34 @@ public class Genetic_Algorithm {
             for (int j = 1; j <= 9; j++) {
                 int multiplier = bandFitness.get(i).get(j);
                 if (multiplier == -1) {
-                    score += 2;
+                    score += 5;
                 } else {
-                    score += multiplier * 2;
+                    score += multiplier * 3;
                 }
                 multiplier = stackFitness.get(i).get(j);
                 if (multiplier == -1) {
-                    score += 2;
+                    score += 5;
                 } else {
-                    score += multiplier * 2;
+                    score += multiplier * 3;
                 }
                 multiplier = regionFitness.get(i).get(j);
                 if (multiplier == -1) {
-                    score += 2;
+                    score += 5;
                 } else {
-                    score += multiplier * 2;
+                    score += multiplier * 3;
                 }
             }
         }
 
-        score /= 4;
-//        System.out.println("Score :" + score);
+        if (compressScores) {
+            score /= 4;
+        }
+        if (expandScores) {
+            score *= 5;
+        }
+        if (printScores) {
+            System.out.println("Score :" + score);
+        }
         return score;
 
         // This is for testing purposes only, but could be worked into a fitness function!
@@ -190,13 +215,11 @@ public class Genetic_Algorithm {
 
     /**
      * Determines the individuals to reproduce and crossover.
-     *
-     * @param pool Current reproduction pool
      */
-    private void runTournament(HashMap<Grid, Integer> pool) {
+    private void runTournament() {
 
         HashMap<Grid, Integer> subPopA = new HashMap<>(), subPopB = new HashMap<>();
-        pool.forEach((n, m) -> { // Condense this to eliminate subPopB
+        this.reproductionPool.forEach((n, m) -> { // Condense this to eliminate subPopB
             if (subPopA.size() < this.individuals / 2 && random.nextInt(1) == 1) {
                 subPopA.put(n, m);
             } else if (subPopB.size() == this.individuals / 2) {
@@ -220,15 +243,15 @@ public class Genetic_Algorithm {
 
         for (Map.Entry<Grid, Integer> entry : subPopA.entrySet()) {
             if (entry.getValue().equals(fitnesses.get(0))) {
-                fittestPrimary = entry.getKey();
-                System.out.println("Primary Fitness Score: " + entry.getValue());
+                this.fittestPrimary = entry.getKey();
+//                System.out.println("Primary Fitness Score: " + entry.getValue());
                 break;
             }
         }
         for (Map.Entry<Grid, Integer> entry : subPopA.entrySet()) {
             if (entry.getValue().equals(fitnesses.get(1)) && !entry.getKey().equals(fittestPrimary)) {
-                fittestSecondary = entry.getKey();
-                System.out.println("Secondary Fitness Score: " + entry.getValue());
+                this.fittestSecondary = entry.getKey();
+//                System.out.println("Secondary Fitness Score: " + entry.getValue());
                 break;
             }
         }
@@ -261,20 +284,20 @@ public class Genetic_Algorithm {
             newGrid.getSquareList().get(i).setValue(fittestSecondary.getSquareList().get(i).getValue());
         }
 
-        System.out.println("------------");
-
-        fittestPrimary.displayGrid(false);
-        fittestSecondary.displayGrid(false);
-        System.out.println(crossoverPoint);
-
-        newGrid.displayGrid(false);
-
-        System.out.println(this.determineFitness(fittestPrimary));
-        System.out.println(this.determineFitness(fittestSecondary));
-        System.out.println(this.determineFitness(newGrid));
-
-
-        System.out.println("------------");
+//        System.out.println("------------");
+//
+//        fittestPrimary.displayGrid(false);
+//        fittestSecondary.displayGrid(false);
+//        System.out.println(crossoverPoint);
+//
+//        newGrid.displayGrid(false);
+//
+//        System.out.println(this.determineFitness(fittestPrimary));
+//        System.out.println(this.determineFitness(fittestSecondary));
+//        System.out.println(this.determineFitness(newGrid));
+//
+//
+//        System.out.println("------------");
 
 
         // Mutation
@@ -285,9 +308,9 @@ public class Genetic_Algorithm {
             mutationPoints[i] = random.nextInt(80);
         }
 
-        for (int i = 0; i < mutationPoints.length; i++){
-            System.out.println(mutationPoints[i]);
-        }
+//        for (int i = 0; i < mutationPoints.length; i++) {
+//            System.out.println(mutationPoints[i]);
+//        }
 
         for (int i = 0; i < mutationPoints.length; i++) {
             if (!newGrid.getSquareList().get(mutationPoints[i]).isPreSolved()) {
@@ -295,10 +318,53 @@ public class Genetic_Algorithm {
             }
         }
 
-        newGrid.displayGrid(false);
-        System.out.println(this.determineFitness(newGrid));
-        
+        // Handle Generations
+
+        int genA = fittestPrimary.getGeneration();
+        int genB = fittestSecondary.getGeneration();
+        int genNext = Math.max(genA, genB) + 1;
+        newGrid.setGeneration(genNext);
+        if (genNext > this.latestGeneration) {
+            this.latestGeneration = genNext;
+        }
+
+//        newGrid.displayGrid(false);
+//        System.out.println(this.determineFitness(newGrid));
 
         // Return new grid to reproductionPool
+
+        AtomicInteger maxFitness = new AtomicInteger();
+        this.reproductionPool.forEach((n, m) -> {
+            if (m > maxFitness.get()) {
+                maxFitness.set(m);
+            }
+        });
+        Grid unfittest = null;
+        for (Map.Entry<Grid, Integer> entry : this.reproductionPool.entrySet()) {
+            if (entry.getValue() == maxFitness.intValue()) {
+                unfittest = entry.getKey();
+                break;
+
+            }
+        }
+        int newFitness = this.determineFitness(newGrid);
+        if (printData) {
+            System.out.println("new: " + newFitness + " old: " + maxFitness.intValue() + " Latest gen: " + this.latestGeneration + " Iterations: " + this.iterations);
+        }
+        if (newFitness <= maxFitness.intValue()) {
+            this.reproductionPool.remove(unfittest);
+            this.reproductionPool.put(newGrid, this.determineFitness(newGrid));
+
+            if (displayGrids){
+                newGrid.displayGrid(false);
+            }
+
+            if (newFitness <= this.bestFitnessScore) {
+                this.bestFitnessScore = newFitness;
+            }
+            if (this.bestFitnessScore == 0) {
+                this.solution = newGrid;
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@ public class Main {
 //
 //
 		Log.logger.info("Reading and verifying grid.");
-		Grid unsolved = fileReader.createGrid("Grid_Empty");
+		Grid unsolved = fileReader.createGrid("Grid_Anti-Backtracker");
 		verifier.verify(unsolved);
 //
 //		Log.logger.info("Solving grid.");
@@ -31,7 +31,8 @@ public class Main {
 //		Log.logger.info("Iterations: " + backtracker.getIterations());
 
 		Genetic_Algorithm GA = new Genetic_Algorithm();
-		GA.solve(unsolved);
+		Grid GASolve = GA.solve(unsolved);
+//		verifier.verify(GASolve);
 
 	}
 }
